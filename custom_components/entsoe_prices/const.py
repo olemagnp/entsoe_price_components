@@ -1,0 +1,1 @@
+DOMAIN = "entsoe_prices"
