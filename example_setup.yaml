@@ -1,0 +1,6 @@
+sensor:
+  - platform: entsoe_prices
+    access_token: !secret entsoe_access_token
+    area: 10YNO-3--------J
+    currency: auto
+    api_url: https://transparency.entsoe.eu/api
