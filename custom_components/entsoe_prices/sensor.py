@@ -66,7 +66,7 @@ async def async_setup_platform(
     kwargs = {
         key: config[val]
         for key, val in (("currency", CONF_CURRENCY), ("url", CONF_API_URL))
-        if config[val] is not None
+        if val in config
     }
 
     if config[CONF_FOREX_KIND] is not None:
