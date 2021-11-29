@@ -168,6 +168,8 @@ class EntsoeSensor(Entity):
     def map_entsoe_prices(self):
         if self.entsoe.prices is None:
             return
+        
+        _LOGGER.warning(f"ENTSOE_PRICES: {self.entsoe.prices}")
 
         prices = sorted(self.entsoe.prices, key=lambda p: p.begin)
 
@@ -177,6 +179,13 @@ class EntsoeSensor(Entity):
         ]
 
     async def handle_hour_change(self):
+        next_trigger = (now + datetime.timedelta(hours=1)).replace(
+            minute=0, second=0, microsecond=0
+        )
+        async_track_point_in_time(
+            self._hass, lambda: self.handle_hour_change, next_trigger
+        )
+
         now = datetime.datetime.now()
 
         hour = now.hour
@@ -188,11 +197,11 @@ class EntsoeSensor(Entity):
             await self.tomorrow_from_entsoe()
 
         todays_prices = self.attrs[ATTR_PRICES].get(ATTR_TODAY, None)
-        if todays_prices is None:
+        if todays_prices is None or todays_prices == []:
             await self.today_from_entsoe()
             todays_prices = self.attrs[ATTR_PRICES][ATTR_TODAY]
         
-        if todays_prices is None:
+        if todays_prices is None or todays_prices == []:
             self._available = False
             return
 
@@ -203,15 +212,10 @@ class EntsoeSensor(Entity):
 
         self._state = cur_price
 
-        next_trigger = (now + datetime.timedelta(hours=1)).replace(
-            minute=0, second=0, microsecond=0
-        )
-        async_track_point_in_time(
-            self._hass, lambda: self.handle_hour_change, next_trigger
-        )
         self.async_write_ha_state()
 
     async def initial_setup(self):
         "Update the state of the sensor"
-        await asyncio.gather(self.today_from_entsoe(), self.tomorrow_from_entsoe())
+        await self.today_from_entsoe()
+        await self.tomorrow_from_entsoe()
         await self.handle_hour_change()
