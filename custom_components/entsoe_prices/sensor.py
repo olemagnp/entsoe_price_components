@@ -1,3 +1,4 @@
+import asyncio
 from typing import Any, Callable, Mapping, Optional
 
 import logging
@@ -101,10 +102,6 @@ class EntsoeSensor(Entity):
         self._available = None
         self._hass = hass
 
-        self.today_from_entsoe()
-        self.tomorrow_from_entsoe()
-        self.handle_hour_change()
-
     @property
     def name(self) -> str:
         "Return the name of the entity"
@@ -198,3 +195,5 @@ class EntsoeSensor(Entity):
 
     async def async_update(self):
         "Update the state of the sensor"
+        await asyncio.gather(self.today_from_entsoe(), self.tomorrow_from_entsoe())
+        await self.handle_hour_change()
