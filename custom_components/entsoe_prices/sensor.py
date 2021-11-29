@@ -101,6 +101,10 @@ class EntsoeSensor(Entity):
         self._available = None
         self._hass = hass
 
+        self.today_from_entsoe()
+        self.tomorrow_from_entsoe()
+        self.handle_hour_change()
+
     @property
     def name(self) -> str:
         "Return the name of the entity"
