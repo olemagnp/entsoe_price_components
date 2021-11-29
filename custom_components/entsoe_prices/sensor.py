@@ -88,7 +88,7 @@ async def async_setup_platform(
         **kwargs,
     )
     sensors = [EntsoeSensor(entsoe, hass)]
-    await async_add_entities(sensors, update_before_add=False)
+    async_add_entities(sensors, update_before_add=False)
 
     futures = []
     for sensor in sensors:
