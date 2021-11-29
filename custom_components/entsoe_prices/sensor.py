@@ -145,8 +145,10 @@ class EntsoeSensor(Entity):
         except ClientError:
             self._available = False
             _LOGGER.exception("Error retrieving data from Entsoe")
+            self.attrs[ATTR_PRICES][ATTR_TOMORROW] = None
 
-        self.attrs[ATTR_TOMORROW] = self.map_entsoe_prices()
+
+        self.attrs[ATTR_PRICES][ATTR_TOMORROW] = self.map_entsoe_prices()
 
     async def today_from_entsoe(self):
         yesterday = datetime.datetime.now().replace(
@@ -158,8 +160,10 @@ class EntsoeSensor(Entity):
         except ClientError:
             self._available = False
             _LOGGER.exception("Error retrieving data from Entsoe")
+            self.attrs[ATTR_PRICES][ATTR_TODAY] = None
+            return
 
-        self.attrs[ATTR_TODAY] = self.map_entsoe_prices()
+        self.attrs[ATTR_PRICES][ATTR_TODAY] = self.map_entsoe_prices()
 
     def map_entsoe_prices(self):
         if self.entsoe.prices is None:
@@ -187,6 +191,10 @@ class EntsoeSensor(Entity):
         if todays_prices is None:
             await self.today_from_entsoe()
             todays_prices = self.attrs[ATTR_PRICES][ATTR_TODAY]
+        
+        if todays_prices is None:
+            self._available = False
+            return
 
         cur_price = todays_prices[hour]
 
