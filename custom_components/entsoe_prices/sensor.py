@@ -48,9 +48,9 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
         vol.Required(CONF_AREA): cv.string,
         vol.Optional(CONF_CURRENCY, default="NOK"): cv.string,
         vol.Optional(CONF_UNIT_OF_MEASUREMENT, default="kWh"): cv.string,
-        vol.Optional(CONF_FOREX_KIND, default=None): cv.string,
+        vol.Optional(CONF_FOREX_KIND): cv.string,
         vol.Optional(CONF_FOREX_TOKEN, default=""): cv.string,
-        vol.Optional(CONF_API_URL, default=None): cv.string,
+        vol.Optional(CONF_API_URL): cv.string,
     }
 )
 
@@ -88,7 +88,13 @@ async def async_setup_platform(
         **kwargs,
     )
     sensors = [EntsoeSensor(entsoe, hass)]
-    async_add_entities(sensors, update_before_add=True)
+    await async_add_entities(sensors, update_before_add=False)
+
+    futures = []
+    for sensor in sensors:
+        futures.append(sensor.initial_setup())
+
+    await asyncio.gather(*futures)
 
 
 class EntsoeSensor(Entity):
@@ -193,7 +199,7 @@ class EntsoeSensor(Entity):
         )
         self.async_write_ha_state()
 
-    async def async_update(self):
+    async def initial_setup(self):
         "Update the state of the sensor"
         await asyncio.gather(self.today_from_entsoe(), self.tomorrow_from_entsoe())
         await self.handle_hour_change()
