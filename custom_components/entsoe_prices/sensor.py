@@ -145,7 +145,7 @@ class EntsoeSensor(Entity):
             self._available = False
             _LOGGER.exception("Error retrieving data from Entsoe")
 
-        self.attrs[ATTR_TOMORROW] = self.map_entso_prices()
+        self.attrs[ATTR_TOMORROW] = self.map_entsoe_prices()
 
     async def today_from_entsoe(self):
         yesterday = datetime.datetime.now().replace(
