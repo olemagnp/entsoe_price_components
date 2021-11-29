@@ -196,8 +196,8 @@ class EntsoeSensor(Entity):
             self._available = False
             return
 
-        _LOGGER.warning("TODAY:" + todays_prices)
-        _LOGGER.warning("HOUR:" + hour)
+        _LOGGER.warning("TODAY:" + str(todays_prices))
+        _LOGGER.warning("HOUR:" + str(hour))
 
         cur_price = todays_prices[hour]
 
