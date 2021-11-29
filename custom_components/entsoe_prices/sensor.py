@@ -32,6 +32,7 @@ from homeassistant.const import (
 from .const import (
     ATTR_TODAY,
     ATTR_TOMORROW,
+    ATTR_PRICES,
     CONF_AREA,
     CONF_API_URL,
     CONF_FOREX_KIND,
@@ -102,7 +103,7 @@ class EntsoeSensor(Entity):
         super().__init__()
         self.entsoe = entsoe
 
-        self.attrs = {}
+        self.attrs = {ATTR_PRICES: {}}
         self._name = f"Entsoe Day-Ahead Prices: {entsoe.area}"
         self._state = None
         self._available = None
@@ -182,10 +183,10 @@ class EntsoeSensor(Entity):
         if hour == 15:
             await self.tomorrow_from_entsoe()
 
-        todays_prices = self.attrs["prices"].get(ATTR_TODAY, None)
+        todays_prices = self.attrs[ATTR_PRICES].get(ATTR_TODAY, None)
         if todays_prices is None:
             await self.today_from_entsoe()
-            todays_prices = self.attrs["prices"][ATTR_TODAY]
+            todays_prices = self.attrs[ATTR_PRICES][ATTR_TODAY]
 
         cur_price = todays_prices[hour]
 

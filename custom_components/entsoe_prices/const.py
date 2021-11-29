@@ -10,3 +10,4 @@ FOREX_EXCHANGE_RATE = "exchangeratesapi"
 
 ATTR_TODAY = "today"
 ATTR_TOMORROW = "tomorrow"
+ATTR_PRICES = "prices"
