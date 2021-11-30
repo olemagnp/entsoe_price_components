@@ -11,3 +11,9 @@ FOREX_EXCHANGE_RATE = "exchangeratesapi"
 ATTR_TODAY = "today"
 ATTR_TOMORROW = "tomorrow"
 ATTR_PRICES = "prices"
+ATTR_ENERGY_UNIT = "energy_unit"
+ATTR_EXCHANGE_RATE = "currency_exchange_rate"
+
+FORMAT_DATE = "%Y-%m-%d"
+
+UPDATE_HOUR = 14
