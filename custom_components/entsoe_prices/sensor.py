@@ -144,9 +144,13 @@ class EntsoeSensor(SensorEntity):
     def unique_id(self) -> str:
         return self.entsoe.area
 
+    # @property
+    # def device_class(self) -> str:
+    #     return DEVICE_CLASS_MONETARY
+
     @property
-    def device_class(self) -> str:
-        return DEVICE_CLASS_MONETARY
+    def state_class(self) -> str:
+        return "measurement"
 
     @property
     def available(self) -> bool:
